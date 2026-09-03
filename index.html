@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menopausen Symptom-Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-cream:#faf7f2;
+    --bg-light:#eeeeec;
+    --bordeaux:#7a1b2e;
+    --bordeaux-dark:#5a1220;
+    --input-bg: rgba(32,32,32,0.94);
+    --card-bg: rgba(255,255,255,0.75);
+    --card-border: rgba(60,60,60,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'DM Sans', sans-serif;
+    background: linear-gradient(160deg, var(--bg-cream) 0%, var(--bg-light) 100%);
+    color:#333333;
+    display:flex;
+    justify-content:center;
+    padding:48px 20px;
+  }
+  .wrap{
+    width:100%;
+    max-width:640px;
+  }
+  .heading-area{
+    text-align:center;
+    margin-bottom:36px;
+  }
+  h1{
+    font-family:'Playfair Display', serif;
+    font-size:2.1rem;
+    margin:0 0 10px 0;
+    color:var(--bordeaux-dark);
+    letter-spacing:0.3px;
+  }
+  .subheading{
+    font-size:1rem;
+    color:#5a5a5a;
+    max-width:480px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  .input-panel{
+    background:var(--input-bg);
+    border-radius:18px;
+    padding:28px 26px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.18);
+  }
+  .input-panel label{
+    display:block;
+    color:#f5e9dd;
+    font-size:0.92rem;
+    margin-bottom:10px;
+    font-weight:500;
+  }
+  .input-row{
+    display:flex;
+    gap:10px;
+  }
+  input[type="text"]{
+    flex:1;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.14);
+    color:#fff;
+    font-family:'DM Sans', sans-serif;
+    font-size:0.98rem;
+    outline:none;
+  }
+  input[type="text"]::placeholder{
+    color:rgba(255,255,255,0.65);
+  }
+  input[type="text"]:focus, input[type="number"]:focus{
+    border-color:var(--bg-light);
+    background:rgba(255,255,255,0.2);
+  }
+  textarea{
+    width:100%;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.14);
+    color:#fff;
+    font-family:'DM Sans', sans-serif;
+    font-size:0.98rem;
+    outline:none;
+    resize:vertical;
+    line-height:1.5;
+  }
+  textarea::placeholder{
+    color:rgba(255,255,255,0.65);
+  }
+  textarea:focus{
+    border-color:var(--bg-light);
+    background:rgba(255,255,255,0.2);
+  }
+  input[type="number"]{
+    flex:1;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.14);
+    color:#fff;
+    font-family:'DM Sans', sans-serif;
+    font-size:0.98rem;
+    outline:none;
+  }
+  input[type="number"]::placeholder{
+    color:rgba(255,255,255,0.65);
+  }
+  .checklist{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    margin-top:6px;
+  }
+  .check-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 8px;
+    border-radius:8px;
+    cursor:pointer;
+    color:#f5e9dd;
+    font-size:0.9rem;
+    line-height:1.4;
+  }
+  .check-row:hover{
+    background:rgba(255,255,255,0.06);
+  }
+  .check-row input[type="checkbox"]{
+    flex-shrink:0;
+    width:20px;
+    height:20px;
+    accent-color:var(--bordeaux);
+    cursor:pointer;
+  }
+  button.primary{
+    background:var(--bordeaux);
+    color:#fff;
+    border:none;
+    padding:0 26px;
+    border-radius:12px;
+    font-family:'DM Sans', sans-serif;
+    font-weight:700;
+    font-size:0.96rem;
+    cursor:pointer;
+    transition:background 0.2s, transform 0.1s;
+    white-space:nowrap;
+  }
+  button.primary:hover{ background:var(--bordeaux-dark); }
+  button.primary:active{ transform:scale(0.98); }
+  button.primary:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+  .hint{
+    margin-top:12px;
+    font-size:0.8rem;
+    color:rgba(255,255,255,0.65);
+  }
+  .disclaimer{
+    margin-top:14px;
+    font-size:0.75rem;
+    color:rgba(255,255,255,0.5);
+    line-height:1.4;
+  }
+
+  .loading{
+    display:none;
+    text-align:center;
+    margin-top:30px;
+    color:var(--bordeaux-dark);
+    font-weight:500;
+  }
+  .spinner{
+    width:32px;
+    height:32px;
+    border:3px solid rgba(122,27,46,0.2);
+    border-top-color:var(--bordeaux);
+    border-radius:50%;
+    margin:0 auto 12px auto;
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .error-box{
+    display:none;
+    margin-top:24px;
+    background:rgba(122,27,46,0.1);
+    border:1px solid rgba(122,27,46,0.35);
+    color:var(--bordeaux-dark);
+    padding:16px 18px;
+    border-radius:12px;
+    font-size:0.92rem;
+    line-height:1.5;
+  }
+
+  .results{
+    display:none;
+    margin-top:32px;
+  }
+  .result-card{
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:20px 22px;
+    margin-bottom:16px;
+    opacity:0;
+    animation:fadeUp 0.55s ease forwards;
+    backdrop-filter: blur(2px);
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .card-title{
+    font-family:'Playfair Display', serif;
+    font-size:1.15rem;
+    color:var(--bordeaux-dark);
+    margin:0;
+  }
+  .badge{
+    flex-shrink:0;
+    background:var(--bordeaux);
+    color:#fff;
+    font-size:0.72rem;
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .card-text{
+    font-size:0.92rem;
+    line-height:1.55;
+    color:#333333;
+    margin:0 0 10px 0;
+  }
+  .card-label{
+    font-size:0.78rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    color:var(--bordeaux);
+    margin-bottom:4px;
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:4px;
+  }
+  .tag{
+    background:rgba(122,27,46,0.12);
+    color:var(--bordeaux-dark);
+    font-size:0.76rem;
+    padding:4px 10px;
+    border-radius:20px;
+  }
+
+  .reset-wrap{
+    display:none;
+    text-align:center;
+    margin-top:20px;
+  }
+  button.ghost{
+    background:transparent;
+    border:1.5px solid var(--bordeaux);
+    color:var(--bordeaux-dark);
+    padding:10px 22px;
+    border-radius:12px;
+    font-family:'DM Sans', sans-serif;
+    font-weight:600;
+    font-size:0.9rem;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  button.ghost:hover{
+    background:rgba(122,27,46,0.1);
+  }
+
+  .result-disclaimer{
+    margin-top:8px;
+    font-size:0.78rem;
+    color:#6a6a6a;
+    text-align:center;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="heading-area">
+    <h1>Menopausen Symptom-Check</h1>
+    <p class="subheading">Beschreibe deine Symptome in eigenen Worten – du bekommst eine erste Einordnung, mit welcher Wahrscheinlichkeit du dich in der Prämenopause, Perimenopause oder Postmenopause befindest, plus konkrete nächste Schritte.</p>
+  </div>
+
+  <div id="inputPanel" class="input-panel">
+
+    <div id="stepAge">
+      <label for="ageInput">Wie alt bist du?</label>
+      <div class="input-row">
+        <input type="number" id="ageInput" placeholder="z. B. 47" autocomplete="off" min="18" max="80">
+        <button class="primary" id="nextBtn" onclick="goToSymptomStep()">Weiter</button>
+      </div>
+    </div>
+
+    <div id="stepSymptoms" style="display:none;">
+      <label>Welche der folgenden Symptome hast du in den letzten 4 Wochen bemerkt – neu aufgetreten oder verschlimmert?</label>
+      <div class="checklist" id="checklist">
+        <label class="check-row"><input type="checkbox" data-label="Hitzewallungen und Schweißausbrüche"><span>Hitzewallungen und Schweißausbrüche</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Schlafprobleme"><span>Schlafprobleme (Einschlafstörungen, nächtliches oder frühes Erwachen)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Reizbarkeit"><span>Reizbarkeit (Nervosität, innere Anspannung, aggressive Stimmung)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Gedrückte Stimmung"><span>Gedrückte Stimmung (Traurigkeit, Antriebslosigkeit, Stimmungsschwankungen)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Ängstlichkeit"><span>Ängstlichkeit (innere Unruhe, Panikgefühle)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Körperliche und geistige Erschöpfung"><span>Körperliche und geistige Erschöpfung (Konzentration, Gedächtnis, Leistungsabfall)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Gelenk- und Muskelbeschwerden"><span>Gelenk- und Muskelbeschwerden (Gelenkschmerzen, rheumaartige Beschwerden)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Herzbeschwerden"><span>Herzbeschwerden (Herzstolpern, Herzrasen, Engegefühl)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Blasenbeschwerden"><span>Blasenbeschwerden (Harndrang, Schwierigkeiten beim Wasserlassen, Inkontinenz)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Trockenheit der Scheide"><span>Trockenheit der Scheide (Brennen, Schmerzen beim Geschlechtsverkehr)</span></label>
+        <label class="check-row"><input type="checkbox" data-label="Sexuelle Probleme"><span>Sexuelle Probleme (verändertes Verlangen, Erregung oder Zufriedenheit)</span></label>
+      </div>
+
+      <label for="symptomInput" style="margin-top:18px;">Weitere Symptome, die hier nicht aufgeführt sind (optional)</label>
+      <input type="text" id="symptomInput" placeholder="z. B. unregelmäßiger Zyklus, Migräne heftiger als früher …" autocomplete="off">
+
+      <div class="input-row" style="margin-top:16px; justify-content:flex-end;">
+        <button class="primary" id="submitBtn" onclick="startCheck()">Prüfen</button>
+      </div>
+      <div class="hint">Tipp: Auch scheinbar unwichtige Symptome zählen – je vollständiger die Angaben, desto klarer die Einordnung.</div>
+    </div>
+
+    <div class="disclaimer">Die Symptom-Liste orientiert sich an der Menopause Rating Scale (MRS), einem international anerkannten und validierten Fragebogen zur Erfassung von Wechseljahresbeschwerden. Dieses Tool ist kein offizieller MRS-Test, ersetzt keine ärztliche oder heilpraktische Diagnose und dient ausschließlich der ersten Orientierung.</div>
+  </div>
+
+  <div class="loading" id="loadingBox">
+    <div class="spinner"></div>
+    <div id="loadingText">Deine Symptome werden analysiert …</div>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="results" id="resultsBox"></div>
+
+  <div class="reset-wrap" id="resetWrap">
+    <button class="ghost" onclick="resetTool()">← Zurück</button>
+  </div>
+
+</div>
+
+<script>
+const ageInput = document.getElementById('ageInput');
+const symptomInput = document.getElementById('symptomInput');
+const nextBtn = document.getElementById('nextBtn');
+const submitBtn = document.getElementById('submitBtn');
+const inputPanel = document.getElementById('inputPanel');
+const stepAge = document.getElementById('stepAge');
+const stepSymptoms = document.getElementById('stepSymptoms');
+const loadingBox = document.getElementById('loadingBox');
+const loadingText = document.getElementById('loadingText');
+const errorBox = document.getElementById('errorBox');
+const resultsBox = document.getElementById('resultsBox');
+const resetWrap = document.getElementById('resetWrap');
+
+ageInput.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    goToSymptomStep();
+  }
+});
+
+// Einzeiliges Freitextfeld: Enter sendet direkt ab.
+symptomInput.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    startCheck();
+  }
+});
+
+function goToSymptomStep(){
+  const age = ageInput.value.trim();
+  if(!age){
+    showError('Bitte trage zuerst dein Alter ein.');
+    return;
+  }
+  errorBox.style.display = 'none';
+  stepAge.style.display = 'none';
+  stepSymptoms.style.display = 'block';
+}
+
+function getCheckedSymptoms(){
+  return Array.from(document.querySelectorAll('#checklist input[type="checkbox"]:checked'))
+    .map(cb => cb.getAttribute('data-label'));
+}
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = 'block';
+}
+
+function resetTool(){
+  inputPanel.style.display = 'block';
+  stepAge.style.display = 'block';
+  stepSymptoms.style.display = 'none';
+  loadingBox.style.display = 'none';
+  errorBox.style.display = 'none';
+  resultsBox.style.display = 'none';
+  resultsBox.innerHTML = '';
+  resetWrap.style.display = 'none';
+  ageInput.value = '';
+  symptomInput.value = '';
+  document.querySelectorAll('#checklist input[type="checkbox"]').forEach(cb => cb.checked = false);
+  submitBtn.disabled = false;
+  ageInput.focus();
+}
+
+async function startCheck(){
+  const age = ageInput.value.trim();
+  const checkedSymptoms = getCheckedSymptoms();
+  const extraSymptoms = symptomInput.value.trim();
+
+  if(checkedSymptoms.length === 0 && !extraSymptoms){
+    showError('Bitte kreuze mindestens ein Symptom an oder trage ein weiteres Symptom ein.');
+    return;
+  }
+
+  errorBox.style.display = 'none';
+  inputPanel.style.display = 'none';
+  resultsBox.style.display = 'none';
+  resultsBox.innerHTML = '';
+  resetWrap.style.display = 'none';
+  loadingBox.style.display = 'block';
+  loadingText.textContent = 'Deine Angaben werden mit typischen Phasen-Mustern abgeglichen …';
+  submitBtn.disabled = true;
+
+  const maxAttempts = 3;
+  let lastError = null;
+
+  for(let attempt = 1; attempt <= maxAttempts; attempt++){
+    if(attempt > 1){
+      loadingText.textContent = `Server ausgelastet – Versuch ${attempt}/${maxAttempts} …`;
+      await new Promise(r => setTimeout(r, 2500));
+    }
+    try{
+      const response = await fetch('/.netlify/functions/menopause-check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          age: age,
+          symptoms: checkedSymptoms,
+          extra: extraSymptoms
+        })
+      });
+
+      if(response.status === 529 || response.status === 503){
+        lastError = 'server_busy';
+        continue;
+      }
+
+      if(!response.ok){
+        lastError = 'http_' + response.status;
+        break;
+      }
+
+      const data = await response.json();
+      const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+      const fullText = textBlocks.join('\n');
+
+      const match = fullText.match(/\[[\s\S]*\]/);
+      if(!match){
+        lastError = 'parse_error';
+        break;
+      }
+
+      let parsed;
+      try{
+        parsed = JSON.parse(match[0]);
+      }catch(e){
+        lastError = 'parse_error';
+        break;
+      }
+
+      if(!Array.isArray(parsed) || parsed.length === 0){
+        lastError = 'parse_error';
+        break;
+      }
+
+      renderResults(parsed);
+      loadingBox.style.display = 'none';
+      submitBtn.disabled = false;
+      return;
+
+    }catch(networkErr){
+      lastError = 'network';
+      continue;
+    }
+  }
+
+  loadingBox.style.display = 'none';
+  submitBtn.disabled = false;
+  inputPanel.style.display = 'block';
+
+  let msg = 'Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es gleich noch einmal.';
+  if(lastError === 'server_busy'){
+    msg = 'Der Server ist gerade stark ausgelastet. Bitte versuche es in ein paar Sekunden erneut.';
+  }else if(lastError === 'parse_error'){
+    msg = 'Die Antwort konnte nicht ausgewertet werden. Bitte versuche es erneut.';
+  }else if(lastError === 'network'){
+    msg = 'Verbindung fehlgeschlagen. Bitte prüfe deine Internetverbindung und versuche es erneut.';
+  }else if(typeof lastError === 'string' && lastError.startsWith('http_')){
+    msg = 'Die Anfrage konnte nicht verarbeitet werden (Fehler ' + lastError.replace('http_','') + '). Bitte versuche es erneut.';
+  }
+  showError(msg);
+}
+
+function renderResults(items){
+  resultsBox.innerHTML = '';
+
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.style.animationDelay = (i * 0.15) + 's';
+
+    const tags = (item.erkannte_symptome || []).map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="card-top">
+        <h3 class="card-title">${escapeHtml(item.phase || 'Einordnung')}</h3>
+        <span class="badge">${escapeHtml(item.prozent || '')}</span>
+      </div>
+      <p class="card-text">${escapeHtml(item.begruendung || '')}</p>
+      ${tags ? `<div class="card-label">Erkannte Symptome</div><div class="tags">${tags}</div>` : ''}
+      ${item.naechster_schritt ? `<div class="card-label" style="margin-top:12px;">Nächster Schritt</div><p class="card-text" style="margin-bottom:0;">${escapeHtml(item.naechster_schritt)}</p>` : ''}
+    `;
+    resultsBox.appendChild(card);
+  });
+
+  const disclaimer = document.createElement('div');
+  disclaimer.className = 'result-disclaimer';
+  disclaimer.textContent = 'Symptom-Kategorien angelehnt an die Menopause Rating Scale (MRS). Diese Einordnung ersetzt keine ärztliche oder heilpraktische Diagnose und dient nur der ersten Orientierung.';
+  resultsBox.appendChild(disclaimer);
+
+  resultsBox.style.display = 'block';
+  resetWrap.style.display = 'block';
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>
