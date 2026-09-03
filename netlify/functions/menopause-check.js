@@ -51,7 +51,7 @@ exports.handler = async function (event) {
     "\nAngekreuzte Symptome der letzten 4 Wochen (neu oder verschlechtert): " + symptomList +
     (extra ? "\nWeitere, selbst genannte Symptome: " + extra : "");
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.Anthropic;
   if (!apiKey) {
     return {
       statusCode: 500,
